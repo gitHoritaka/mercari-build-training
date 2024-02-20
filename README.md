@@ -54,6 +54,12 @@ The following icons indicate pointers for
 
 ** docker buildについて **
 * local : docker build -t build2024/app:latest -f python/dockerfile .
+
 * pull : docker run -d -p 9000:9000 ghcr.io/githoritaka/mercari-build-training:main
+*docker-composeを使うとき
+* typescript/simple-mercari-web : docker build -t build2024/web:latest .
+* local : docker build -t build2024/app:latest -f python/dockerfile .
+* docker-compose up
+
 
 
