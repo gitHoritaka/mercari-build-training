@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  frontend:
+    image: build2024/web:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:9000
+    depends_on:
+      - api
+    networks:
+      - mercari-network
+
+  api:
+    image: build2024/app:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - FRONT_URL=http://localhost:3000
+    networks:
+      - mercari-network
+
+networks:
+  mercari-network:
+    driver: bridge
