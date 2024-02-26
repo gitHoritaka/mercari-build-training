@@ -22,7 +22,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set Docker Tag
-        run: echo ::set-env name=DOCKER_TAG::ghcr.io/githoritaka/mercari-build-training:${GITHUB_REF##*/}
+        id: set_tag
+        run: echo "DOCKER_TAG=ghcr.io/githoritaka/mercari-build-training:${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Build Docker Image
         run: docker build -t $DOCKER_TAG -f python/dockerfile .
