@@ -3,6 +3,8 @@ name: Docker Build and Push
 on:
   push:
     branches:
+      - main
+      - feature/*
 
 jobs:
   build_and_push:
@@ -20,13 +22,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker Image
-        run: docker build -t ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }} -f python/dockerfile .
+        run: docker build -t ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name/refs/heads/}} -f python/dockerfile .
 
       - name: Push Docker Image to GitHub Container Registry
-        run: docker push ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }}
+        run: docker push ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name/refs/heads/}}
       
       - name: Pull Docker Image
-        run: docker pull ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }} 
+        run: docker pull ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name/refs/heads/}}
 
       - name: Run Docker Image and Execute python/test.py
-        run: docker run ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }} python/test.py
+        run: docker run ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name/refs/heads/}} python/test.py
