@@ -37,8 +37,6 @@ jobs:
       - name: Run Docker Image 
         run: docker run -d -p 9000:9000 $DOCKER_TAG 
       
-      - name: start server
-        run: uvicorn python/main:app --reload --port 9000
 
       - name: Run test.py
         run: python3 python/test.py
