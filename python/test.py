@@ -1,5 +1,4 @@
 import requests
-print("hello this is testcode")
 """
 curl -X GET \
     --url 'http://localhost:9000/items' \
