@@ -25,3 +25,9 @@ jobs:
 
       - name: Push Docker Image to GitHub Container Registry
         run: docker push ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }}
+      
+      - name: Pull Docker Image
+        run: docker pull ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }} 
+
+      - name: Run Docker Image and Execute python/test.py
+        run: docker run ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }} python/test.py
