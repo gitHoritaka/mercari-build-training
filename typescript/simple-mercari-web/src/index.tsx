@@ -4,12 +4,32 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// サーバーのURL
+const server = process.env.REACT_APP_API_URL || 'http://127.0.0.1:9000';
+
+// サーバーへのGETリクエストを行う関数
+const fetchData = async () => {
+  try {
+    const response = await fetch(`${server}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    }
+    const data = await response.json();
+    console.log('Fetched data:', data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+fetchData();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
