@@ -2,22 +2,26 @@ version: '3'
 
 services:
   frontend:
-    image: build2024/web:latest
+    build:
+      context: ./typescript/simple-mercari-web
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_API_URL=http://localhost:9000
+      - REACT_APP_API_URL=http://api:9000
     depends_on:
       - api
     networks:
       - mercari-network
 
   api:
-    image: build2024/app:latest
+    build:
+      context: .
+      dockerfile: ./python/Dockerfile
     ports:
       - "9000:9000"
     environment:
-      - FRONT_URL=http://localhost:3000
+      - FRONT_URL=http://frontend:3000
     networks:
       - mercari-network
 
