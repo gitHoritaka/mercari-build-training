@@ -22,7 +22,7 @@ def get_items():
         print('All responses are valid')
     else:
         print("Error: Response key 'items' not found")
-
-while True:
+st = time.time()
+while time.time()-st < 20:
     get_items()
-    time.sleep(15)
+    time.sleep(5)
