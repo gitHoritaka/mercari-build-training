@@ -82,6 +82,7 @@ def root():
     image BLOB
     );"""
     sql_connect.execute(sql_command) # SQL実行
+    sql_connect.close()
 
     category_sql_connect = sqlite3.connect(category_db_path)
     table = "category"
@@ -180,7 +181,13 @@ step4の要件定義として上のコマンドを順に1,2とすると1,2,1と�
 @app.post("/items")
 async def add_item(name: str = Form(),category:str = Form(),image:UploadFile = File()):
     data = await image.read()  # アップロードされた画像をbytesに変換する処理
-    sha256 = hashlib.sha256(data).hexdigest()
+    sha256 = hashlib.sha256(data).hexdigest() + ".jpg"
+     # 画像を保存するパスを構築
+    image_path = os.path.join(images, sha256)
+
+    # 画像を保存
+    with open(image_path, "wb") as f:
+        f.write(data)
 
     sql_connect = sqlite3.connect(db_path)
     category_connect = sqlite3.connect(category_db_path)
@@ -209,18 +216,27 @@ async def add_item(name: str = Form(),category:str = Form(),image:UploadFile = F
     #     json.dump(item_dict, js, indent = 4)
     #     print("success creating json")
     return {"message": f"item received: name = {name} category ={category},image = {sha256}"}
-
+'''
+curl -X GET \
+     --url 'http://localhost:9000/image' \
+curl -X GET \
+    --url "http://127.0.0.1:9000/image/90364df683e0b80b6f875a6efaa771c1c08b704de0841fc13e2b825edef99cec.jpg" --output image.jpg
+'''
 
 @app.get("/image/{image_name}")
 async def get_image(image_name):
     # Create image path
+    logger.debug(f"image_name = {image_name}")
+    
     image = images / image_name
 
     if not image_name.endswith(".jpg"):
         raise HTTPException(status_code=400, detail="Image path does not end with .jpg")
 
     if not image.exists():
+        print("debug file not found")
         logger.debug(f"Image not found: {image}")
         image = images / "default.jpg"
+    print("file_found")
 
     return FileResponse(image)

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 'feature/*'
 
 jobs:
   build_and_push:
@@ -20,14 +21,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set Docker Tag
+        id: set_tag
+        run: echo "DOCKER_TAG=ghcr.io/githoritaka/mercari-build-training:${GITHUB_REF##*/}" >> $GITHUB_ENV
+
       - name: Build Docker Image
-        run: docker build -t ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }} -f python/dockerfile .
+        run: docker build -t $DOCKER_TAG -f python/dockerfile .
 
       - name: Push Docker Image to GitHub Container Registry
-        run: docker push ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }}
+        run: docker push $DOCKER_TAG
       
       - name: Pull Docker Image
-        run: docker pull ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }} 
+        run: docker pull $DOCKER_TAG
 
-      - name: Run Docker Image and Execute python/test.py
-        run: docker run ghcr.io/githoritaka/mercari-build-training:${{ github.ref_name }} python/test.py
+      - name: Run Docker Image 
+        run: docker run -d -p 9000:9000 $DOCKER_TAG 
+      
+
+      - name: Run test.py
+        run: python3 python/test.py
