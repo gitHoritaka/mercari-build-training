@@ -1,27 +1,28 @@
 import requests
-"""
-curl -X GET \
-    --url 'http://localhost:9000/items' \
-"""
+import time
 
-url = 'http://localhost:9000/items'
-response = requests.get(url)
+def get_items():
+    url = 'http://localhost:9000/items'
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # レスポンスコードが 200 以外の場合はエラーを発生させる
+    except requests.exceptions.RequestException as e:
+        print('Error:', e)
+        return
 
-if response.status_code == 200:
-    data = dict(response.json())
-    if "items" in data.keys():
-        items  = data["items"]#items[0] = {keys:value}
+    data = response.json()
+    if "items" in data:
+        items  = data["items"]
         items_key = ['id','name','category','image_name']
         for item in items:
             for key in items_key:
-                if key in item.keys():
-                    pass
-                else:
+                if key not in item:
                     print(f'Error item = {item} does not contain {key}')
-                    exit()
-        print('all response are valid')
-
+                    return
+        print('All responses are valid')
     else:
-        print("Error response key 'items' not added")
-else:
-    print('Error:', response.status_code)
+        print("Error: Response key 'items' not found")
+
+while True:
+    get_items()
+    time.sleep(15)
